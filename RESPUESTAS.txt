@@ -1,0 +1,47 @@
+BETA:
+a-Después del merge realizado por BETA, la rama master queda con todos los cambios unificados: el archivo datos.txt contiene los datos personales (nombre, IP y hora) de los tres integrantes, y se agregan los archivos CPUGamma.txt, CPUAlfa.txt y CPUBeta.txt, cada uno con la información del comando /proc/cpuinfo de cada usuario.
+
+b-BETA pudo ver todos los cambios realizados por GAMMA y ALFA únicamente si actualizó correctamente su repositorio local con git pull origin gamma, accedió a esa rama y revisó los archivos modificados. Sin ese paso previo, corría el riesgo de no ver o sobrescribir los cambios del equipo.
+
+c-Para hacer el merge en el punto 5, BETA debió ejecutar: git checkout master para ir a la rama principal, luego git pull origin master para actualizarla, después git merge gamma para integrar los cambios, resolver conflictos si los hubo, y finalmente git push origin master para subir el resultado al repositorio remoto.
+
+GAMMA:
+d-con datos actualizados?
+Sí, si se siguió el flujo correcto (hacer git pull antes de editar, luego git push tras commit), las ramas quedan actualizadas:
+•    La rama de GAMMA (gamma) contiene:
+Su modificación original (datos.txt + CPUGamma.txt)
+Luego los aportes de ALFA
+Finalmente los de BETA
+•    Al hacer el merge completo en master, se integran todos los cambios anteriores, dejando los datos actualizados y consolidados en la rama principal
+
+e-Git no puede decidir qué versión conservar (p. ej., dos ediciones del mismo fragmento datos.txt) y lanza un conflicto git-tower.com+11stackoverflow.com+11dev.to+11reddit.com+2sdq.kastel.kit.edu+2get.assembla.com+2git-tower.com+4learn.microsoft.com+4gustavo-espindola.medium.com+4reddit.com.
+Contexto cercano
+Aunque se modifiquen líneas diferentes, si están próximas, Git puede detectar conflicto por precaución docs.github.com+2stackoverflow.com+2git-tower.com+2.
+Versiones desalineadas
+Si alguien no hizo git pull antes, su versión local va por detrás. Al intentar mergear, aparecen conflictos o referencias obsoletas .
+Errores en orden de operaciones
+Sin la secuencia correcta (pull → editar → commit → push), se pueden crear merges innecesarios o commits conflictivos.
+
+f-Aquí está el flujo recomendado, paso a paso:
+bash
+CopiarEditar
+git checkout gamma               # Asegurarse de estar en la rama 'gamma'
+git pull origin gamma            # Traer los últimos cambios
+
+Editar beta.txt para agregar su nombre, IP y hora
+Ejemplo usando echo (ajustar nombre y comando de IP según plataforma):
+echo -e "\nGAMMA Apellido\nIP: $(hostname -I | awk '{print $1}')\nHora: $(date +'%Y-%m-%d\ %H:%M:%S')" >> beta.txt
+
+git add beta.txt
+git commit -m "GAMMA: actualiza beta.txt con su info"
+git push origin gamma           # Subir los cambios al remoto
+
+ALFA:
+
+g-punto 8 git checkout beta
+echo "GAMMA - ifconfig: 54321 - Hora: 54321" >> beta.txt
+git add beta.txt
+git commit -m "GAMMA agregó su info en beta.txt"
+git checkout beta
+git commit -m "ALFA agregó su info en beta.txt"
+git push origin beta
